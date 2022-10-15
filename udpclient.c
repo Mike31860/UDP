@@ -40,6 +40,9 @@ int main(void)
    unsigned int msg_len;               /* length of message */
    int bytes_sent, bytes_recd;         /* number of bytes sent or received */
 
+    int totalNumberPacketsReceived=0;
+   int totalNumberBytesReceived=0;
+   uint32_t checksum=0;
    /* open a socket */
 
    if ((sock_client = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0)
@@ -97,8 +100,18 @@ int main(void)
       close(sock_client);
       exit(1);
    }
+   /*  printf("Enter port number for server: ");
+  scanf("%hu", &server_port); */
 
-   while (numberRange == 0)
+   server_port = 21975;
+   /* Clear server address structure and initialize with server address */
+   memset(&server_addr, 0, sizeof(server_addr));
+   server_addr.sin_family = AF_INET;
+   memcpy((char *)&server_addr.sin_addr, server_hp->h_addr,
+          server_hp->h_length);
+   server_addr.sin_port = htons(server_port);
+   int sendPackets=1;
+   while(sendPackets==1)
    {
       // Ask user how many integers would like to obtain from the server
       printf("Enter a count of integers would like to obtain from the server: ");
@@ -111,7 +124,6 @@ int main(void)
       {
          if (requestID < 65535)
          {
-            numberRange = 1;
             requestID++;
             p1.id = requestID;
             p1.Count = Count;
@@ -122,66 +134,51 @@ int main(void)
             perror("Client: The id is higher than 65535\n");
          }
       }
+
+      bytes_sent = sendto(sock_client, &p1, sizeof(p1), 0,
+                          (struct sockaddr *)&server_addr, sizeof(server_addr));
+
+      printf("Waiting for response from server...\n");
+      int division = (Count) / 25;
+      int mod = Count % 25;
+      int sizeList = 0;
+      if (mod == 0)
+      {
+         sizeList = division;
+      }
+      else
+      {
+         sizeList = division + 1;
+      }
+
+      PacketSender packets[sizeList];
+
+      bytes_recd = recvfrom(sock_client, &packets, (108 * sizeList), 0,
+                            (struct sockaddr *)0, (int *)0);
+
+     
+     for (int i = 0; i < sizeList; i++)
+      {
+         printf("-----------------HEADER-----------------\n");
+         printf("Request id: %d\n", packets[i].header.requestId);
+         printf("Sequence Number: %d\n", packets[i].header.sequenceNumber);
+         printf("Last: %d\n", packets[i].header.last);
+         printf("Count: %d\n", packets[i].header.count);
+         printf("----------------------------------\n");
+         printf("-----------------Payload-----------------\n");
+         for (int j = 0; j < 25; j++)
+         {
+            printf("Integer %d: %d \n",j, packets[i].payload[j]);
+         }
+         printf("----------------------------------\n");
+
+      }
+
+      printf("DO you want to continue sending integers to the server? Type 1 for yes and 0 for No: ");
+      scanf("%d", &sendPackets);
+
    }
 
-  /*  printf("Enter port number for server: ");
-   scanf("%hu", &server_port); */
-
-   server_port=21975;
-   /* Clear server address structure and initialize with server address */
-   memset(&server_addr, 0, sizeof(server_addr));
-   server_addr.sin_family = AF_INET;
-   memcpy((char *)&server_addr.sin_addr, server_hp->h_addr,
-          server_hp->h_length);
-   server_addr.sin_port = htons(server_port);
-
-   /* user interface */
-
- /*   printf("Please input a sentence:\n");
-   scanf("%s", sentence);
-   msg_len = strlen(sentence) + 1; */
-
-   /* send message */
-
-   /* bytes_sent = sendto(sock_client, sentence, msg_len, 0,
-                       (struct sockaddr *)&server_addr, sizeof(server_addr)); */
-
-   bytes_sent = sendto(sock_client, (struct Packet*)&p1, (sizeof(p1)), 0,
-                       (struct sockaddr *)&server_addr, sizeof(server_addr));                    
-
-   /* get response from server */
-
-   printf("Waiting for response from server...\n");
-  struct  Packet* packetuu= calloc(1,sizeof(struct Packet));
-   bytes_recd = recvfrom(sock_client, packetuu, sizeof(*packetuu), 0,  
-   (struct sockaddr *)0, (int*)0);
- /*   if(bytes_recd<0)
-   {
-      printf("\nUDP Broadcast not received ERROR CODE : %s\n",strerror(errno));
-
-    
-   } */
- /*   printf("Received packet is id: %d and the countr is %d\n",  packetuu->id, packetuu->Count); */
-     
-   ListPacket *listpacket2 = (ListPayload *)  malloc(sizeof(ListPacket));
-   bytes_recd = recvfrom(sock_client, listpacket2, sizeof(*listpacket2), 0,
-                         (struct sockaddr *)0, (int*)0);
- /*   printf("\nThe response from server is: %d\n", listpacket2->length); */
- /*   PacketSender* point = listpacket2->head;
-   int size= listpacket2->length;
-   
-        for(int i=0; i<size; i++){
-        //    ListPayload* listpay=LastPacket->payload;
-            struct Header header = point->header;
-            printf("Header requestid: %d \n Header sequenceNumber: %d \n Header last: %d \n Header count: %d \n", header.requestId, header.sequenceNumber, header.last, header.count);
-        } */
-
-
-
-  // printListPackets(&listpacket);
-   //printf("%s\n\n", modifiedSentence);
-
-   /* close the socket */
 
    close(sock_client);
 }

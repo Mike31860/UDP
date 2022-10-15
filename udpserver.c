@@ -38,9 +38,11 @@ int main(void)
    unsigned int i;                     /* temporary loop variable */
 
    // Miguel
-   struct Packet *packetMessage = calloc(1,sizeof(struct Packet));
-
-  
+   struct Packet *packetMessage = calloc(1, sizeof(struct Packet));
+   int totalNumberPacketsTransmitted=0;
+   int totalNUmberBytesTransmitted=0;
+   int sumSequenceNumber=0;
+   uint32_t checksum=0;
    //
    /* open a socket */
    if ((sock_server = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0)
@@ -76,59 +78,60 @@ int main(void)
    for (;;)
    {
 
-  //    printf("first");
-      /* bytes_recd = recvfrom(sock_server, packetMessage, sizeof(*packetMessage), 0,
+      bytes_recd = recvfrom(sock_server, packetMessage, sizeof(packetMessage), 0,
                             (struct sockaddr *)&client_addr, &client_addr_len);
-      
-      printf("Answer %d", bytes_recd);
-      printf("Received Sentence is: %s\n     with length %d\n\n",
-                         sentence, bytes_recd);
-       printf("Received packet is id: %d and the countr is %d\n",  packetMessage->id, packetMessage->Count);                   
-     
- */
-      bytes_recd = recvfrom(sock_server, packetMessage, sizeof(*packetMessage), 0,
-                            (struct sockaddr *)&client_addr, &client_addr_len);
-      printf("Received packet is id: %d and the countr is %d\n",  packetMessage->id, packetMessage->Count);
-      
-     /*  int id=packetMessage->id;
-      int count=packetMessage->Count;
-      int division=(count)/25;
-      int mod=count%25;
+      printf("Received packet is id: %d and the countr is %d\n", packetMessage->id, packetMessage->Count);
+
+      int id = packetMessage->id;
+      int count = packetMessage->Count;
+      int division = (count) / 25;
+      int mod = count % 25;
       printf("Division %d", division);
-      int sequenceNumber=1;
-     
-      for(int i=0; i<division; i++)
+      int sequenceNumber = 1;
+      int sizeList=0;
+      if(mod==0){
+         sizeList=division;
+      }else{
+         sizeList=division+1;
+      }       
+      PacketSender *listpa[sizeList];
+      int position=0;
+      for (int i = 0; i < division; i++)
       {
-          if(mod==0){
-          PacketSender* packet=insertPacket(id,  sequenceNumber, 1, 25);
-          ListPayload* listpay=packet->payload;
-          sequenceNumber++;
-
-          }else{
-            PacketSender* packet=insertPacket(id,  sequenceNumber, 0, 25);
-            ListPayload* listpay=packet->payload;
+         if (i == (division - 1)&& mod==0)
+         {
+            position = insertPacket(id, sequenceNumber, 1, 25, listpa,position);
             sequenceNumber++;
-          }
-         
+         }
+         else
+         {
+            position = insertPacket(id, sequenceNumber, 0, 25, listpa,position);
+            sequenceNumber++;
+         }
       }
-      PacketSender* LastPacket=insertPacket(id,  sequenceNumber, 1, mod );
-      ListPayload* listpay=LastPacket->payload;
+      if (mod != 0)
+      {
+         position= insertPacket(id, sequenceNumber, 1, mod, listpa,position);
 
+      }
 
-      printf("first element %d", listpay->head->integer); */
+   
+      PacketSender packets[sizeList];
+      for (int i = 0; i < sizeList; i++)
+      {
+         packets[i] = *listpa[i];
+         for (size_t j = 0; j < 25; j++)
+         {
+            checksum+=  packets[i].payload[j];
+         }
+                  
+      }
 
-      /* prepare the message to send */
-     /*  printf("Received packet is id: %d\n with count %d\n\n",
-             packetMessage->id, packetMessage->Count); */
-      /*   msg_len = bytes_recd;
-        for (i=0; i<msg_len; i++)
-           modifiedSentence[i] = toupper (sentence[i]); */
-
-      /* send message */
- bytes_sent = sendto(sock_server, (struct Packet*)&packetMessage, (sizeof(packetMessage)), 0,
-                  (struct sockaddr*) &client_addr, client_addr_len);
-
-     /*     bytes_sent = sendto(sock_server, (struct ListPacket*)&listpacket, (sizeof(listpacket)), 0,
-                  (struct sockaddr*) &client_addr, client_addr_len); */
+      bytes_sent = sendto(sock_server, &packets, 108 * sizeList, 0,
+                          (struct sockaddr *)&client_addr, client_addr_len);
+      
+      totalNumberPacketsTransmitted+=sizeList;
+      totalNUmberBytesTransmitted+=bytes_sent;
+      
    }
 }
