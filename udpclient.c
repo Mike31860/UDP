@@ -13,7 +13,7 @@
 #include <errno.h>
 #define STRING_SIZE 1024
 
-int main(void)
+int main(int argc, char *argv[])
 {
 
    int sock_client; /* Socket used by client */
@@ -40,9 +40,12 @@ int main(void)
    unsigned int msg_len;               /* length of message */
    int bytes_sent, bytes_recd;         /* number of bytes sent or received */
 
-    int totalNumberPacketsReceived=0;
-   int totalNumberBytesReceived=0;
-   uint32_t checksum=0;
+   int totalNumberPacketsReceived = 0; /* The total number of response packets received */
+   int totalNumberBytesReceived = 0;   /*The total number of bytes received (as measured by the sum of the values returned by each
+  recvfrom operation) */
+   uint32_t checksum = 0;              /* checksum of all the data integers received in all the response packets combined. This checksum
+             is obtained by adding all the data integers as 32-bit unsigned integers, with any carry or overflow
+             ignored*/
    /* open a socket */
 
    if ((sock_client = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0)
@@ -92,36 +95,52 @@ int main(void)
 
    /* initialize server address information */
 
-   printf("Enter hostname of server: ");
-   scanf("%s", server_hostname);
+  
+  /*  strncpy(server_hostname, argv[1], STRING_SIZE);
+   printf("The hostname is %s: \n", server_hostname); */
+      printf("Enter hostname of server: ");
+      scanf("%s", server_hostname);
    if ((server_hp = gethostbyname(server_hostname)) == NULL)
    {
       perror("Client: invalid server hostname\n");
       close(sock_client);
       exit(1);
    }
-   /*  printf("Enter port number for server: ");
-  scanf("%hu", &server_port); */
+    printf("Enter port number for server: ");
+  scanf("%hu", &server_port);
 
-   server_port = 21975;
+  /*  server_port = atoi(argv[2]);
+   printf("The port number for server is: %d \n", server_port); */
    /* Clear server address structure and initialize with server address */
    memset(&server_addr, 0, sizeof(server_addr));
    server_addr.sin_family = AF_INET;
    memcpy((char *)&server_addr.sin_addr, server_hp->h_addr,
           server_hp->h_length);
    server_addr.sin_port = htons(server_port);
-   int sendPackets=1;
-   while(sendPackets==1)
+
+   /*SendPackets is a variables that will change depending on the user. If user wants
+   to continue requesting packets the value for sendPackets would be 1, but if the users
+   does not want to request to the server the value will change to 0*/
+   int sendPackets = 1;
+
+   /*This while loop is in charged of closing the socket when the the user does not want
+   to send more packets*/
+   while (sendPackets == 1)
    {
       // Ask user how many integers would like to obtain from the server
       printf("Enter a count of integers would like to obtain from the server: ");
       scanf("%d", &Count);
+
+      /*This if condition is in charged of making sure that the count variable given by the client
+      does not exceed 2 bytes*/
       if (Count <= 0 || Count > 65535)
       {
          perror("Client: Input is not within the range of 0-65535, please re-enter the number again\n");
       }
       else
       {
+          /*This if condition is in charged of making sure that the requestID variable
+      does not exceed 2 bytes*/
          if (requestID < 65535)
          {
             requestID++;
@@ -131,16 +150,21 @@ int main(void)
          }
          else
          {
-            perror("Client: The id is higher than 65535\n");
+            perror("Client: The id is higher than 2 bytes\n");
          }
       }
 
+      /*This method is in charged of sending the Structure p1, which containts the RequestID and the 
+      count number */
       bytes_sent = sendto(sock_client, &p1, sizeof(p1), 0,
                           (struct sockaddr *)&server_addr, sizeof(server_addr));
 
       printf("Waiting for response from server...\n");
+      /*The division variable is in charged of doing the division between the count number giving by the user
+      and 25. This is with the aim of determinig the lenght of the list of packets needed, becasue each
+      payload will only can have 25 integers*/
       int division = (Count) / 25;
-      int mod = Count % 25;
+      int mod = Count % 25; 
       int sizeList = 0;
       if (mod == 0)
       {
@@ -150,14 +174,14 @@ int main(void)
       {
          sizeList = division + 1;
       }
+      /*packets is the list of packets return fromt the server*/ 
+      PacketServer packets[sizeList];
 
-      PacketSender packets[sizeList];
-
+      /*Recvfrom is the methos whose objective is receving the information from the server*/ 
       bytes_recd = recvfrom(sock_client, &packets, (108 * sizeList), 0,
                             (struct sockaddr *)0, (int *)0);
 
-     
-     for (int i = 0; i < sizeList; i++)
+      for (int i = 0; i < sizeList; i++)
       {
          printf("-----------------HEADER-----------------\n");
          printf("Request id: %d\n", packets[i].header.requestId);
@@ -168,17 +192,14 @@ int main(void)
          printf("-----------------Payload-----------------\n");
          for (int j = 0; j < 25; j++)
          {
-            printf("Integer %d: %d \n",j, packets[i].payload[j]);
+            printf("Integer %d: %d \n", j, packets[i].payload[j]);
          }
          printf("----------------------------------\n");
-
       }
 
       printf("DO you want to continue sending integers to the server? Type 1 for yes and 0 for No: ");
       scanf("%d", &sendPackets);
-
    }
-
 
    close(sock_client);
 }
