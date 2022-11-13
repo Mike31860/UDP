@@ -1,0 +1,153 @@
+Script started on 2022-10-16 21:06:38-0400
+miguelro@cisc650:~/proj1/proj1$ ls -l
+total 54
+-rw-r--r-- 1 miguelro miguelro  3748 Oct 16 20:39 list.h
+-rwxr-xr-x 1 miguelro miguelro   343 Oct  8 14:34 Makefile
+-rw-rw-r-- 1 miguelro miguelro     0 Oct 16 21:06 scriptClient
+-rw-rw-r-- 1 miguelro miguelro     0 Oct 16 21:05 scriptServer
+-rwxrwxr-x 1 miguelro miguelro 13072 Oct 16 21:06 tcpclient
+-rw-r--r-- 1 miguelro miguelro  3206 Oct  8 14:34 tcpclient.c
+-rwxrwxr-x 1 miguelro miguelro 13008 Oct 16 21:06 tcpserver
+-rw-r--r-- 1 miguelro miguelro  4099 Oct  8 14:34 tcpserver.c
+-rw-rw-r-- 1 miguelro miguelro   383 Oct 16 20:45 typescript
+-rwxrwxr-x 1 miguelro miguelro 13320 Oct 16 21:06 udpclient
+-rw-r--r-- 1 miguelro miguelro  9638 Oct 16 20:39 udpclient.c
+-rwxrwxr-x 1 miguelro miguelro 13168 Oct 16 21:06 udpserver
+-rw-r--r-- 1 miguelro miguelro  6963 Oct 16 20:39 udpserver.c
+miguelro@cisc650:~/proj1/proj1$ ./udpclient
+Enter hostname of server: cisc650.cis.udel.edu
+Enter port number for server: 21975
+Enter a count of integers would like to obtain from the server: 100
+Waiting for response from server...
+-----------------------------------
+Request id: 1
+Sequence Number: 100
+The total number of response packets received: 4
+The total number of bytes  received: 464
+The sum of all sequence Number: 10
+The checksum is 3508532
+-----------------------------------
+Do you want to continue sending integers to the server? Type 1 for yes and 0 for No: 1
+Enter a count of integers would like to obtain from the server: 5000
+Waiting for response from server...
+-----------------------------------
+Request id: 2
+Sequence Number: 5000
+The total number of response packets received: 200
+The total number of bytes  received: 23200
+The sum of all sequence Number: 20100
+The checksum is 164902483
+-----------------------------------
+Do you want to continue sending integers to the server? Type 1 for yes and 0 for No: 1
+Enter a count of integers would like to obtain from the server: 8000
+Waiting for response from server...
+-----------------------------------
+Request id: 3
+Sequence Number: 8000
+The total number of response packets received: 320
+The total number of bytes  received: 37120
+The sum of all sequence Number: 51360
+The checksum is 262315143
+-----------------------------------
+Do you want to continue sending integers to the server? Type 1 for yes and 0 for No: 1
+Enter a count of integers would like to obtain from the server: 10000
+Waiting for response from server...
+-----------------------------------
+Request id: 4
+Sequence Number: 10000
+The total number of response packets received: 400
+The total number of bytes  received: 46400
+The sum of all sequence Number: 80200
+The checksum is 329885121
+-----------------------------------
+Do you want to continue sending integers to the server? Type 1 for yes and 0 for No: 1
+Enter a count of integers would like to obtain from the server: 135
+Waiting for response from server...
+-----------------------------------
+Request id: 5
+Sequence Number: 135
+The total number of response packets received: 6
+The total number of bytes  received: 696
+The sum of all sequence Number: 21
+The checksum is 4288420
+-----------------------------------
+Do you want to continue sending integers to the server? Type 1 for yes and 0 for No: 0
+miguelro@cisc650:~/proj1/proj1$ ./udpclient
+Enter hostname of server: cisci 650.cis.udel.edu
+Enter port number for server: 21975
+Enter a count of integers would like to obtain from the server: 6000
+Waiting for response from server...
+-----------------------------------
+Request id: 1
+Sequence Number: 6000
+The total number of response packets received: 240
+The total number of bytes  received: 27840
+The sum of all sequence Number: 28920
+The checksum is 196570819
+-----------------------------------
+Do you want to continue sending integers to the server? Type 1 for yes and 0 for No: 1
+Enter a count of integers would like to obtain from the server: 7000
+Waiting for response from server...
+-----------------------------------
+Request id: 2
+Sequence Number: 7000
+The total number of response packets received: 280
+The total number of bytes  received: 32480
+The sum of all sequence Number: 39340
+The checksum is 227383189
+-----------------------------------
+Do you want to continue sending integers to the server? Type 1 for yes and 0 for No: 0
+miguelro@cisc650:~/proj1/proj1$ ./udpclient
+Enter hostname of server: cisc650.udel.edu
+Client: invalid server hostname
+: Success
+miguelro@cisc650:~/proj1/proj1$ ./udpclient
+Enter hostname of server: cisci 650.cis.udel.edu
+Enter port number for server: 21975
+Enter a count of integers would like to obtain from the server: 8000    65000 
+Waiting for response from server...
+-----------------------------------
+Request id: 1
+Sequence Number: 6500
+The total number of response packets received: 260
+The total number of bytes  received: 30160
+The sum of all sequence Number: 33930
+The checksum is 214582618
+-----------------------------------
+Do you want to continue sending integers to the server? Type 1 for yes and 0 for No: 1
+Enter a count of integers would like to obtain from the server: 4500
+Waiting for response from server...
+-----------------------------------
+Request id: 2
+Sequence Number: 4500
+The total number of response packets received: 180
+The total number of bytes  received: 20880
+The sum of all sequence Number: 16290
+The checksum is 145103409
+-----------------------------------
+Do you want to continue sending integers to the server? Type 1 for yes and 0 for No: 1 0
+miguelro@cisc650:~/proj1/proj1$ ./udpclient
+Enter hostname of server: cisc650.udel.edu^[[D^[[D                cis.udel.edu
+Enter port number for server: 21975
+Enter a count of integers would like to obtain from the server: 70000
+Client: Input is not within the range of 0-65535, please re-enter the number again
+: Success
+Do you want to continue sending integers to the server? Type 1 for yes and 0 for No: 1
+Enter a count of integers would like to obtain from the server: 80000
+Client: Input is not within the range of 0-65535, please re-enter the number again
+: Success
+Do you want to continue sending integers to the server? Type 1 for yes and 0 for No: 1
+Enter a count of integers would like to obtain from the server: 2000
+Waiting for response from server...
+-----------------------------------
+Request id: 1
+Sequence Number: 2000
+The total number of response packets received: 80
+The total number of bytes  received: 9280
+The sum of all sequence Number: 3240
+The checksum is 66974717
+-----------------------------------
+Do you want to continue sending integers to the server? Type 1 for yes and 0 for No: 0
+miguelro@cisc650:~/proj1/proj1$ exit
+
+Script done on 2022-10-16 21:11:30-0400

@@ -1,0 +1,148 @@
+Script started on 2022-10-16 21:05:44-0400
+miguelro@cisc650:~/proj1/proj1$ ls -l
+total 54
+-rw-r--r-- 1 miguelro miguelro  3748 Oct 16 20:39 list.h
+-rwxr-xr-x 1 miguelro miguelro   343 Oct  8 14:34 Makefile
+-rw-rw-r-- 1 miguelro miguelro     0 Oct 16 21:05 scriptServer
+-rwxrwxr-x 1 miguelro miguelro 13072 Oct 16 21:04 tcpclient
+-rw-r--r-- 1 miguelro miguelro  3206 Oct  8 14:34 tcpclient.c
+-rwxrwxr-x 1 miguelro miguelro 13008 Oct 16 21:04 tcpserver
+-rw-r--r-- 1 miguelro miguelro  4099 Oct  8 14:34 tcpserver.c
+-rw-rw-r-- 1 miguelro miguelro   383 Oct 16 20:45 typescript
+-rwxrwxr-x 1 miguelro miguelro 13320 Oct 16 21:04 udpclient
+-rw-r--r-- 1 miguelro miguelro  9638 Oct 16 20:39 udpclient.c
+-rwxrwxr-x 1 miguelro miguelro 13168 Oct 16 21:04 udpserver
+-rw-r--r-- 1 miguelro miguelro  6963 Oct 16 20:39 udpserver.c
+miguelro@cisc650:~/proj1/proj1$ make Makefile clean
+make: Nothing to be done for 'Makefile'.
+rm tcpclient tcpserver udpclient udpserver
+miguelro@cisc650:~/proj1/proj1$ ls -l
+total 26
+-rw-r--r-- 1 miguelro miguelro 3748 Oct 16 20:39 list.h
+-rwxr-xr-x 1 miguelro miguelro  343 Oct  8 14:34 Makefile
+-rw-rw-r-- 1 miguelro miguelro    0 Oct 16 21:05 scriptServer
+-rw-r--r-- 1 miguelro miguelro 3206 Oct  8 14:34 tcpclient.c
+-rw-r--r-- 1 miguelro miguelro 4099 Oct  8 14:34 tcpserver.c
+-rw-rw-r-- 1 miguelro miguelro  383 Oct 16 20:45 typescript
+-rw-r--r-- 1 miguelro miguelro 9638 Oct 16 20:39 udpclient.c
+-rw-r--r-- 1 miguelro miguelro 6963 Oct 16 20:39 udpserver.c
+miguelro@cisc650:~/proj1/proj1$ make Makefile all
+make: Nothing to be done for 'Makefile'.
+/usr/bin/gcc tcpclient.c -o tcpclient
+/usr/bin/gcc tcpserver.c -o tcpserver
+/usr/bin/gcc udpclient.c -o udpclient
+/usr/bin/gcc udpserver.c -o udpserver
+miguelro@cisc650:~/proj1/proj1$ ls -l
+total 28
+-rw-r--r-- 1 miguelro miguelro  3748 Oct 16 20:39 list.h
+-rwxr-xr-x 1 miguelro miguelro   343 Oct  8 14:34 Makefile
+-rw-rw-r-- 1 miguelro miguelro     0 Oct 16 21:05 scriptServer
+-rwxrwxr-x 1 miguelro miguelro 13072 Oct 16 21:06 tcpclient
+-rw-r--r-- 1 miguelro miguelro  3206 Oct  8 14:34 tcpclient.c
+-rwxrwxr-x 1 miguelro miguelro 13008 Oct 16 21:06 tcpserver
+-rw-r--r-- 1 miguelro miguelro  4099 Oct  8 14:34 tcpserver.c
+-rw-rw-r-- 1 miguelro miguelro   383 Oct 16 20:45 typescript
+-rwxrwxr-x 1 miguelro miguelro 13320 Oct 16 21:06 udpclient
+-rw-r--r-- 1 miguelro miguelro  9638 Oct 16 20:39 udpclient.c
+-rwxrwxr-x 1 miguelro miguelro 13168 Oct 16 21:06 udpserver
+-rw-r--r-- 1 miguelro miguelro  6963 Oct 16 20:39 udpserver.c
+miguelro@cisc650:~/proj1/proj1$ ./udpserver
+Waiting for incoming messages on port 21975
+
+Received packet is id: 1 and the count is 100
+-----------------------------------
+The request id is : 1
+The Count of the request packet received is : 100
+The total number of response packets transmitted is : 4
+The total number of bytes transmitted is : 464
+The total Sequence Number is : 10
+The total checksum is : 3508532
+-----------------------------------
+Received packet is id: 2 and the count is 5000
+-----------------------------------
+The request id is : 2
+The Count of the request packet received is : 5000
+The total number of response packets transmitted is : 200
+The total number of bytes transmitted is : 23200
+The total Sequence Number is : 20100
+The total checksum is : 164902483
+-----------------------------------
+Received packet is id: 3 and the count is 8000
+-----------------------------------
+The request id is : 3
+The Count of the request packet received is : 8000
+The total number of response packets transmitted is : 320
+The total number of bytes transmitted is : 37120
+The total Sequence Number is : 51360
+The total checksum is : 262315143
+-----------------------------------
+Received packet is id: 4 and the count is 10000
+-----------------------------------
+The request id is : 4
+The Count of the request packet received is : 10000
+The total number of response packets transmitted is : 400
+The total number of bytes transmitted is : 46400
+The total Sequence Number is : 80200
+The total checksum is : 329885121
+-----------------------------------
+Received packet is id: 5 and the count is 135
+-----------------------------------
+The request id is : 5
+The Count of the request packet received is : 135
+The total number of response packets transmitted is : 6
+The total number of bytes transmitted is : 696
+The total Sequence Number is : 21
+The total checksum is : 4288420
+-----------------------------------
+Received packet is id: 1 and the count is 6000
+-----------------------------------
+The request id is : 1
+The Count of the request packet received is : 6000
+The total number of response packets transmitted is : 240
+The total number of bytes transmitted is : 27840
+The total Sequence Number is : 28920
+The total checksum is : 196570819
+-----------------------------------
+Received packet is id: 2 and the count is 7000
+-----------------------------------
+The request id is : 2
+The Count of the request packet received is : 7000
+The total number of response packets transmitted is : 280
+The total number of bytes transmitted is : 32480
+The total Sequence Number is : 39340
+The total checksum is : 227383189
+-----------------------------------
+Received packet is id: 1 and the count is 6500
+-----------------------------------
+The request id is : 1
+The Count of the request packet received is : 6500
+The total number of response packets transmitted is : 260
+The total number of bytes transmitted is : 30160
+The total Sequence Number is : 33930
+The total checksum is : 214582618
+-----------------------------------
+Received packet is id: 2 and the count is 4500
+-----------------------------------
+The request id is : 2
+The Count of the request packet received is : 4500
+The total number of response packets transmitted is : 180
+The total number of bytes transmitted is : 20880
+The total Sequence Number is : 16290
+The total checksum is : 145103409
+-----------------------------------
+Received packet is id: 1 and the count is 2000
+-----------------------------------
+The request id is : 1
+The Count of the request packet received is : 2000
+The total number of response packets transmitted is : 80
+The total number of bytes transmitted is : 9280
+The total Sequence Number is : 3240
+The total checksum is : 66974717
+-----------------------------------
+^Z
+[1]+  Stopped                 ./udpserver
+miguelro@cisc650:~/proj1/proj1$ exit
+There are stopped jobs.
+miguelro@cisc650:~/proj1/proj1$ exit
+
+Script done on 2022-10-16 21:12:00-0400

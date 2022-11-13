@@ -1,0 +1,10 @@
+Script started on 2022-10-16 20:44:50-0400
+miguelro@cisc650:~/proj1/proj1$ ls
+clientscript  serverscript  tcpserver	 udpclient    udpserver.c
+list.h	      tcpclient     tcpserver.c  udpclient.c
+Makefile      tcpclient.c   typescript	 udpserver
+miguelro@cisc650:~/proj1/proj1$ cat clientscript
+miguelro@cisc650:~/proj1/proj1$ exit
+exit
+
+Script done on 2022-10-16 20:45:08-0400
