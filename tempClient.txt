@@ -1,1 +1,0 @@
-Step Number, Server Port, Server’s Secret Code, Server’s Travel Location

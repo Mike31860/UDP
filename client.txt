@@ -1,1 +1,6 @@
 Step Number, Server Port, Server’s Secret Code, Server’s Travel Location
+1,78000,95,MIAMI
+1,78500,21845,Houston
+1,757575,32767,Florida
+1,75758,21845,Houston
+1,896889,32767,Florida11,65000,0,*

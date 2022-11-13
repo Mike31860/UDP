@@ -110,9 +110,28 @@ int main(void)
 
       int stepNum = findServerNumber(server_port, FILE_NAME);
 
-      struct Packet packetToSend = createPacket(packetReceived->stepNumber, packetReceived->clientPortNumber, packetReceived->serverPortNumber, SERVER_SECRET_CODE, TRAVEL_LOCATION);
-      bytes_sent = send(sock_connection, &packetToSend, sizeof(struct Packet), 0);
-      readFileServer(packetReceived, FILE_NAME);
+      struct Packet packet;
+      if (packetReceived->stepNumber == 1)
+      {
+         packet = createPacket(packetReceived->stepNumber, packetReceived->clientPortNumber, SERV_TCP_PORT, 0, "*");
+         bytes_sent = send(sock_connection, &packet, sizeof(struct Packet), 0);
+         readFileServer(packet, FILE_NAME);
+      }
+      else if (packetReceived->stepNumber == 2)
+      {
+         packet = createPacket(packetReceived->stepNumber, packetReceived->clientPortNumber, packetReceived->serverPortNumber, SERVER_SECRET_CODE, "*");
+         bytes_sent = send(sock_connection, &packet, sizeof(struct Packet), 0);
+         readFileServer(packet, FILE_NAME);
+      }
+      else
+      {
+
+         packet = createPacket(packetReceived->stepNumber, packetReceived->clientPortNumber, packetReceived->serverPortNumber, SERVER_SECRET_CODE, TRAVEL_LOCATION);
+         bytes_sent = send(sock_connection, &packet, sizeof(struct Packet), 0);
+         struct Packet packetToWrite;
+         packetToWrite = createPacket(packetReceived->stepNumber, packetReceived->clientPortNumber, packetReceived->serverPortNumber, SERVER_SECRET_CODE, packetReceived->text);
+         readFileServer(packetToWrite, FILE_NAME);
+      }
 
       close(sock_connection);
 

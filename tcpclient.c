@@ -37,6 +37,8 @@ int main(void)
    int bytes_sent, bytes_recd;         /* number of bytes sent or received */
    unsigned int stepNumber = 1;
    struct Packet packetToSend;
+
+   unsigned int secretCode;  
    /*    char *hostName = "localhost";
       char *visitorName = "MIGUEL-ROMERO";
       unsigned int serverScretCode = 0;
@@ -112,26 +114,36 @@ int main(void)
 
    /* user interface */
 
-  /*  printf("Please input a sentence:\n");
-   scanf("%s", sentence); */
+   /*  printf("Please input a sentence:\n");
+    scanf("%s", sentence); */
    /*Create packet to send*/
-   
+
    /* send message */
-   
-   int stepNum=findServerNumber(server_port, FILE_NAME);
-   if(stepNum==0){
-      stepNum++;
+
+   int stepNum = findServerNumber(server_port, FILE_NAME);
+   stepNum+=1;
+
+   if (stepNum == 1 || stepNum==4)
+   {  
+      stepNum=1;
+      packetToSend = createPacket(stepNum, CLIENT_TCP_PORT, 0, 0, "*");
+      bytes_sent = send(sock_client, &packetToSend, sizeof(struct Packet), 0);
    }
-   packetToSend = createPacket(stepNum, CLIENT_TCP_PORT, server_port, 0, VISITOR_NAME);
+   else if (stepNum == 2)
+   {
+      packetToSend = createPacket(stepNum, CLIENT_TCP_PORT, server_port, 0, "*");
+      bytes_sent = send(sock_client, &packetToSend, sizeof(struct Packet), 0);
+   }
+   else{
+   packetToSend = createPacket(stepNum, CLIENT_TCP_PORT, server_port, secretCode, VISITOR_NAME);
    bytes_sent = send(sock_client, &packetToSend, sizeof(struct Packet), 0);
 
-
-
+   }
    /* get response from server */
    struct Packet *packetReceived = calloc(1, sizeof(struct Packet));
    bytes_recd = recv(sock_client, packetReceived, sizeof(struct Packet), 0);
+   secretCode=packetReceived->serverSecretCode;
    readFileClient(packetReceived, FILE_NAME);
-
 
    /* struct PacketClient packetOne = createPacket(stepNumber, server_port,
                                                              0, TRAVEL_LOCATION); */
@@ -139,7 +151,6 @@ int main(void)
    /* printf("The StepNUmber is %d\n, The clientPort is %d\n,  The Server Port is %d\n, the Server Secret Code is %d\n,  The messahe is %s\n", packetReceived->stepNumber, packetReceived->clientPortNumber, packetReceived->serverPortNumber, packetReceived->serverSecretCode,
           packetReceived->text); */
    /* readFile(struct Packet *packetReceived); */
-
 
    /* close the socket */
 

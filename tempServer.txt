@@ -1,1 +1,0 @@
-Step Number, Client Port, Client’s Visitor Name

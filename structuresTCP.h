@@ -126,7 +126,7 @@ int insertPacket(unsigned int requestId, unsigned int sequenceNumber,
     return position + 1;
 }
 
-int readFileClient(struct Packet *packetReceived, char * FileName)
+void readFileClient(struct Packet *packetReceived, char *FileName)
 {
     FILE *ptr;
     ptr = fopen("client.txt", "r");
@@ -140,14 +140,16 @@ int readFileClient(struct Packet *packetReceived, char * FileName)
     printf("content of this file are \n");
     char fileText[100];
     fgets(fileText, sizeof(fileText), ptr);
-    unsigned int stepNumber = 1;
+
     int isINfo = 0;
+    int isFound = 0;
     while (fgets(fileText, sizeof(fileText), ptr))
     {
         isINfo = 1;
         printf("%s", fileText);
         char *token = strtok(fileText, ",");
 
+        unsigned int stepNumber;
         sscanf(token, "%u", &stepNumber);
         /*   printf(" %s\n", idSequence); */
         token = strtok(NULL, ",");
@@ -166,28 +168,30 @@ int readFileClient(struct Packet *packetReceived, char * FileName)
 
         if (packetReceived->serverPortNumber == serverPort)
         {
-            stepNumber++;
-            char *message[80];
+            /*   stepNumber++; */
+            /* char *message[80];
             strcpy(message, packetReceived->text);
-            strcat(message, "\n");
-            struct Packet packetFound = createPacket(stepNumber, 0, packetReceived->serverPortNumber,
-                                                     packetReceived->serverSecretCode, message);
+            strcat(message, "\n"); */
+            struct Packet packetFound = createPacket(packetReceived->stepNumber, packetReceived->serverPortNumber, packetReceived->serverPortNumber,
+                                                     packetReceived->serverSecretCode, packetReceived->text);
             writeToFile(packetFound, FileName);
+            isFound = 1;
         }
         else
         {
-            writeToFile(packet,FileName);
+            writeToFile(packet, FileName);
         }
     }
-    if (isINfo == 0)
+    if (isINfo == 0 || isFound == 0)
     {
-        struct Packet FirstPacket = createPacket(stepNumber, packetReceived->clientPortNumber, packetReceived->serverPortNumber,
+        struct Packet FirstPacket = createPacket(packetReceived->stepNumber, packetReceived->clientPortNumber, packetReceived->serverPortNumber,
                                                  packetReceived->serverSecretCode, packetReceived->text);
         writeToFile(FirstPacket, FileName);
     }
+
     system("mv tempClient.txt client.txt");
     system("touch tempClient.txt");
-    char *filename = "tempClient.txt";
+    /* char *filename = "tempClient.txt";
 
     // open the file for writing
     FILE *fp = fopen(filename, "w");
@@ -201,20 +205,24 @@ int readFileClient(struct Packet *packetReceived, char * FileName)
     fprintf(fp, "Step Number, Server Port, Server’s Secret Code, Server’s Travel Location\n");
 
     // close the file
-    fclose(fp);
+    fclose(fp);*/
 
     fclose(ptr);
-    return stepNumber;
 }
 
 void writeToFile(struct Packet packet, char *FileName)
 {
-    if (strcmp(FileName, "client.txt")==0)
+    if (strcmp(FileName, "client.txt") == 0)
     {
         char *filename = "tempClient.txt";
 
         // open the file for writing
         FILE *fp = fopen(filename, "a");
+        int size = ftell (fp);
+        if (size == 0)
+        {
+            fprintf(fp, "Step Number, Server Port, Server’s Secret Code, Server’s Travel Location\n");
+        }
         // write to the text file
 
         fprintf(fp, "%d,%d,%d,%s",
@@ -232,6 +240,11 @@ void writeToFile(struct Packet packet, char *FileName)
 
         // open the file for writing
         FILE *file = fopen(filename, "a");
+         int size = ftell (file);
+        if (size == 0)
+        {
+            fprintf(file, "Step Number, Client Port, Client’s Visitor Name\n");
+        }
         // write to the text file
 
         fprintf(file, "%d,%d,%s",
@@ -258,6 +271,7 @@ int findServerNumber(int serverPrtNumber, char *FileName)
     char fileText[100];
     fgets(fileText, sizeof(fileText), ptr);
     unsigned int stepNumber = 0;
+    int isInside = 0;
     while (fgets(fileText, sizeof(fileText), ptr))
     {
         printf("%s", fileText);
@@ -270,13 +284,21 @@ int findServerNumber(int serverPrtNumber, char *FileName)
         sscanf(token, "%u", &SoC_Port);
         if (serverPrtNumber == SoC_Port)
         {
+            isInside = 1;
             return stepNumber;
         }
     }
-    return stepNumber;
+    if (isInside == 0)
+    {
+        return 0;
+    }
+    else
+    {
+        return stepNumber;
+    }
 }
 
-int readFileServer(struct Packet *packetReceived, char *FileName)
+int readFileServer(struct Packet packetReceived, char *FileName)
 {
     FILE *ptr;
     ptr = fopen("Server.txt", "r");
@@ -289,7 +311,7 @@ int readFileServer(struct Packet *packetReceived, char *FileName)
 
     char fileText[100];
     fgets(fileText, sizeof(fileText), ptr);
-    unsigned int stepNumber = 1;
+
     int isINfo = 0;
     while (fgets(fileText, sizeof(fileText), ptr))
     {
@@ -297,6 +319,7 @@ int readFileServer(struct Packet *packetReceived, char *FileName)
         printf("%s", fileText);
         char *token = strtok(fileText, ",");
 
+        unsigned int stepNumber;
         sscanf(token, "%u", &stepNumber);
         /*   printf(" %s\n", idSequence); */
         token = strtok(NULL, ",");
@@ -309,45 +332,44 @@ int readFileServer(struct Packet *packetReceived, char *FileName)
         struct Packet packet = createPacket(stepNumber, 0, clientPort,
                                             0, token);
 
-        if (packetReceived->clientPortNumber == clientPort)
+        if (packetReceived.clientPortNumber == clientPort)
         {
-            stepNumber++;
+            /* stepNumber++; */
             char *message[80];
-            strcpy(message, packetReceived->text);
+            strcpy(message, packetReceived.text);
             strcat(message, "\n");
-            struct Packet packetFound = createPacket(stepNumber,  packetReceived->clientPortNumber, packetReceived->serverPortNumber,
-                                                     packetReceived->serverSecretCode, message);
-            writeToFile(packetFound,FileName);
+            struct Packet packetFound = createPacket(packetReceived.stepNumber, packetReceived.clientPortNumber, packetReceived.serverPortNumber,
+                                                     packetReceived.serverSecretCode, message);
+            writeToFile(packetFound, FileName);
         }
         else
         {
-            writeToFile(packet,FileName);
+            writeToFile(packet, FileName);
         }
     }
     if (isINfo == 0)
     {
-        struct Packet FirstPacket = createPacket(stepNumber, packetReceived->clientPortNumber, packetReceived->serverPortNumber,
-                                                 packetReceived->serverSecretCode, packetReceived->text);
+        struct Packet FirstPacket = createPacket(packetReceived.stepNumber, packetReceived.clientPortNumber, packetReceived.serverPortNumber,
+                                                 packetReceived.serverSecretCode, packetReceived.text);
         writeToFile(FirstPacket, FileName);
     }
     system("mv tempServer.txt Server.txt");
-    system("touch tempServertxt");
+    system("touch tempServer.txt");
     char *filename = "tempServer.txt";
 
     // open the file for writing
-    FILE *fp = fopen(filename, "w");
-    if (fp == NULL)
-    {
-        printf("Error opening the file %s", filename);
-        return -1;
-    }
-    // write to the text file
+    /*  FILE *fp = fopen(filename, "w");
+     if (fp == NULL)
+     {
+         printf("Error opening the file %s", filename);
+         return -1;
+     }
+     // write to the text file
 
-    fprintf(fp, "Step Number, Client Port, Client’s Visitor Name\n");
+     fprintf(fp, "Step Number, Client Port, Client’s Visitor Name\n");
 
-    // close the file
-    fclose(fp);
+     // close the file
+     fclose(fp); */
 
     fclose(ptr);
-    return stepNumber;
 }
