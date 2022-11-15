@@ -12,11 +12,11 @@
 #include "structuresTCP.h"
 #define STRING_SIZE 1024
 
-#define CLIENT_TCP_PORT 31975
+#define CLIENT_TCP_PORT 31976
 #define FILE_NAME "client.txt"
 #define HOST_NAME "localhost"
 #define VISITOR_NAME "MIGUEL-ROMERO"
-#define SERV_TCP_PORT 65000
+#define SERV_TCP_PORT 64000
 int main(void)
 {
 

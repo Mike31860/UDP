@@ -168,12 +168,12 @@ void readFileClient(struct Packet *packetReceived, char *FileName)
 
         if (packetReceived->serverPortNumber == serverPort)
         {
-            /* /*   stepNumber++; */
-            char *message[80];
+            /*   stepNumber++; */
+            /* char *message[80];
             strcpy(message, packetReceived->text);
-            strcat(message, "\n"); 
+            strcat(message, "\n"); */
             struct Packet packetFound = createPacket(packetReceived->stepNumber, packetReceived->serverPortNumber, packetReceived->serverPortNumber,
-                                                     packetReceived->serverSecretCode, message);
+                                                     packetReceived->serverSecretCode, packetReceived->text);
             writeToFile(packetFound, FileName);
             isFound = 1;
         }
@@ -316,7 +316,6 @@ int readFileServer(struct Packet packetReceived, char *FileName)
     fgets(fileText, sizeof(fileText), ptr);
 
     int isINfo = 0;
-    int isFound = 0;
     while (fgets(fileText, sizeof(fileText), ptr))
     {
         isINfo = 1;
@@ -333,7 +332,7 @@ int readFileServer(struct Packet packetReceived, char *FileName)
         token = strtok(NULL, ",");
         printf("%s", token);
 
-        struct Packet packet = createPacket(stepNumber, clientPort, 0,
+        struct Packet packet = createPacket(stepNumber, 0, clientPort,
                                             0, token);
 
         if (packetReceived.clientPortNumber == clientPort)
@@ -345,25 +344,21 @@ int readFileServer(struct Packet packetReceived, char *FileName)
             struct Packet packetFound = createPacket(packetReceived.stepNumber, packetReceived.clientPortNumber, packetReceived.serverPortNumber,
                                                      packetReceived.serverSecretCode, message);
             writeToFile(packetFound, FileName);
-            isFound = 1;
         }
         else
         {
             writeToFile(packet, FileName);
         }
     }
-    if (isINfo == 0 || isFound == 0)
+    if (isINfo == 0)
     {
-        char *VisitorName[80];
-            strcpy(VisitorName, packetReceived.text);
-            strcat(VisitorName, "\n");
         struct Packet FirstPacket = createPacket(packetReceived.stepNumber, packetReceived.clientPortNumber, packetReceived.serverPortNumber,
-                                                 packetReceived.serverSecretCode, VisitorName);
+                                                 packetReceived.serverSecretCode, packetReceived.text);
         writeToFile(FirstPacket, FileName);
     }
     system("mv tempServer.txt Server.txt");
     system("touch tempServer.txt");
-    /* char *filename = "tempServer.txt"; */
+    char *filename = "tempServer.txt";
 
     // open the file for writing
     /*  FILE *fp = fopen(filename, "w");
